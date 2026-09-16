@@ -1,0 +1,16 @@
+services:
+  axonserver-1:
+    image: docker.axoniq.io/axoniq/axonserver:2026.1.3
+    pull_policy: always
+    hostname: axonserver-1
+    env_file:
+      - ./axon-server/.env
+    ports:
+      - '8024:8024'
+      - '8124:8124'
+      - '8224:8224'
+    networks:
+      - axon-server
+
+networks:
+  axon-server:
