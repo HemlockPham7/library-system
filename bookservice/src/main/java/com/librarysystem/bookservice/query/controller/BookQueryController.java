@@ -4,7 +4,7 @@ import com.librarysystem.bookservice.query.model.BookPaginationResponseModel;
 import com.librarysystem.bookservice.query.model.BookResponseCommonModel;
 import com.librarysystem.bookservice.query.queries.GetAllBooksQuery;
 import com.librarysystem.bookservice.query.queries.GetBookDetailQuery;
-import com.librarysystem.commonservice.services.RedisHealthService;
+import com.librarysystem.commonservice.services.cache.RedisHealthService;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
 import org.springframework.beans.factory.annotation.Autowired;

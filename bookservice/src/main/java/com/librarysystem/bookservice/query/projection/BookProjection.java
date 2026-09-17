@@ -7,6 +7,7 @@ import com.librarysystem.bookservice.query.queries.GetAllBooksQuery;
 import com.librarysystem.bookservice.query.queries.GetBookDetailQuery;
 import org.axonframework.queryhandling.QueryHandler;
 import org.redisson.api.RBucket;
+import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,9 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.librarysystem.commonservice.services.cache.CacheConstant.CACHE_BOOKS_PAGES_GROUP;
+import static com.librarysystem.commonservice.services.cache.CacheConstant.CACHE_BOOK_DETAIL_PREFIX;
 
 @Component
 public class BookProjection {
@@ -32,7 +36,7 @@ public class BookProjection {
 
     @QueryHandler
     public BookResponseCommonModel handle(GetBookDetailQuery query) throws Exception {
-        String cacheKey = "book:detail:" + query.getId();
+        String cacheKey = CACHE_BOOK_DETAIL_PREFIX + query.getId();
         RBucket<BookResponseCommonModel> bucket = redissonClient.getBucket(cacheKey);
 
         BookResponseCommonModel cachedModel = bucket.get();
@@ -52,11 +56,12 @@ public class BookProjection {
 
     @QueryHandler
     public BookPaginationResponseModel handle(GetAllBooksQuery query) {
-        String cacheKey = String.format("books:page:%d:size:%d:sort:%s:dir:%s",
+        RMap<String, BookPaginationResponseModel> pagesMap = redissonClient.getMap(CACHE_BOOKS_PAGES_GROUP);
+        String pageFieldKey = String.format("page:%d:size:%d:sort:%s:dir:%s",
                 query.getPage(), query.getSize(), query.getSort(), query.getDirection());
-        RBucket<BookPaginationResponseModel> bucket = redissonClient.getBucket(cacheKey);
 
-        BookPaginationResponseModel cachedPagination = bucket.get();
+        BookPaginationResponseModel cachedPagination = pagesMap.get(pageFieldKey);
+
         if (cachedPagination != null) {
             return cachedPagination;
         }
@@ -89,7 +94,10 @@ public class BookProjection {
 
         BookPaginationResponseModel result = new BookPaginationResponseModel(data, pagination);
 
-        bucket.set(result, Duration.ofMinutes(5));
+        pagesMap.put(pageFieldKey, result);
+        if (pagesMap.remainTimeToLive() < 0) {
+            pagesMap.expire(Duration.ofMinutes(10));
+        }
 
         return result;
     }
