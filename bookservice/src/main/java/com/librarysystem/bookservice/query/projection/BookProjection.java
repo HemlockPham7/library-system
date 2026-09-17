@@ -27,7 +27,7 @@ public class BookProjection {
     public BookResponseCommonModel handle(GetBookDetailQuery query) throws Exception {
         BookResponseCommonModel model = new BookResponseCommonModel();
 
-        Book book = bookRepository.findById(query.getId()).orElseThrow(() -> new Exception("Book not found"));
+        Book book = bookRepository.findById(query.getId()).orElseThrow(() -> new Exception("Book not found with BookId: " + query.getId()));
         BeanUtils.copyProperties(book, model);
 
         return model;

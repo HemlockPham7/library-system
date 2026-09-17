@@ -4,6 +4,7 @@ import com.librarysystem.bookservice.command.command.CreateBookCommand;
 import com.librarysystem.bookservice.command.command.DeleteBookCommand;
 import com.librarysystem.bookservice.command.command.UpdateBookCommand;
 import com.librarysystem.bookservice.command.model.BookRequestModel;
+import jakarta.validation.Valid;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class BookCommandController {
     private CommandGateway commandGateway;
 
     @PostMapping
-    public String addBook(@RequestBody BookRequestModel model) {
+    public String addBook(@Valid @RequestBody BookRequestModel model) {
         CreateBookCommand command = CreateBookCommand.builder()
                 .id(UUID.randomUUID().toString())
                 .name(model.getName())
