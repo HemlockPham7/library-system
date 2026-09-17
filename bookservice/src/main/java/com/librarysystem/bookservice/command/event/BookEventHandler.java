@@ -24,17 +24,15 @@ public class BookEventHandler {
     }
 
     @EventHandler
-    public void on(BookUpdateEvent bookUpdatedEvent){
-        Optional<Book> oldBook = bookRepository.findById(bookUpdatedEvent.getId());
+    public void on(BookUpdateEvent bookUpdateEvent){
+        Optional<Book> oldBook = bookRepository.findById(bookUpdateEvent.getId());
 
-        if (oldBook.isPresent()) {
-            Book book = oldBook.get();
-            book.setName(bookUpdatedEvent.getName());
-            book.setAuthor(bookUpdatedEvent.getAuthor());
-            book.setIsReady(bookUpdatedEvent.getIsReady());
-
+        oldBook.ifPresent(book -> {
+            book.setAuthor(bookUpdateEvent.getAuthor());
+            book.setName(bookUpdateEvent.getName());
+            book.setIsReady(bookUpdateEvent.getIsReady());
             bookRepository.save(book);
-        }
+        });
     }
 
     @EventHandler
