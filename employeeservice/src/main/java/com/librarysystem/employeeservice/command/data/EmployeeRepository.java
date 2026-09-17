@@ -1,9 +1,9 @@
 package com.librarysystem.employeeservice.command.data;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-
 public interface EmployeeRepository extends JpaRepository<Employee, String> {
-    List<Employee> findAllByIsDisciplined(Boolean isDisciplined);
+    Page<Employee> findAllByIsDisciplined(Boolean isDisciplined, Pageable pageable);
 }

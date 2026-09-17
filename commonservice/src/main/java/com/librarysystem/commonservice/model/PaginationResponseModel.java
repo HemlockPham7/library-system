@@ -1,4 +1,4 @@
-package com.librarysystem.bookservice.query.model;
+package com.librarysystem.commonservice.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
