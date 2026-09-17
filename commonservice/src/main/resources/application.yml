@@ -1,5 +1,3 @@
 spring:
   application:
     name: commonservice
-  redisson:
-    file: classpath:redisson.yaml
