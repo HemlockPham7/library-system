@@ -1,4 +1,4 @@
-package com.librarysystem.bookservice.query.model;
+package com.librarysystem.employeeservice.query.model;
 
 import com.librarysystem.commonservice.model.PaginationResponseModel;
 import lombok.AllArgsConstructor;
@@ -12,10 +12,10 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BookPaginationResponseModel implements Serializable {
+public class EmployeePaginationResponseModel implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private List<BookResponseCommonModel> data;
+    private List<EmployeeResponseCommonModel> data;
     private PaginationResponseModel pagination;
 }

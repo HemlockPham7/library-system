@@ -5,6 +5,7 @@ import com.librarysystem.bookservice.command.data.BookRepository;
 import com.librarysystem.bookservice.query.model.*;
 import com.librarysystem.bookservice.query.queries.GetAllBooksQuery;
 import com.librarysystem.bookservice.query.queries.GetBookDetailQuery;
+import com.librarysystem.commonservice.model.PaginationResponseModel;
 import org.axonframework.queryhandling.QueryHandler;
 import org.redisson.api.RBucket;
 import org.redisson.api.RMap;
