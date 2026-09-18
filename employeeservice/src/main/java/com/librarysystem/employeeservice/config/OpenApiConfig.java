@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @OpenAPIDefinition(
         info = @Info(
-                title = "Employee Api Specification - Convit",
+                title = "Employee Api Specification",
                 description = "Api documentation for Employee Service",
                 version = "1.0",
                 contact = @Contact(
@@ -24,7 +24,7 @@ import org.springframework.context.annotation.Configuration;
         servers = {
                 @Server(
                         description = "Local ENV",
-                        url = "http://localhost:9002"
+                        url = "http://localhost:9101"
                 ),
         }
 )
