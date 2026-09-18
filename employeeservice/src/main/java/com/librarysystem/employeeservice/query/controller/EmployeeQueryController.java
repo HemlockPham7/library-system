@@ -4,6 +4,9 @@ import com.librarysystem.employeeservice.query.model.EmployeePaginationResponseM
 import com.librarysystem.employeeservice.query.model.EmployeeResponseCommonModel;
 import com.librarysystem.employeeservice.query.queries.GetAllEmployeeQuery;
 import com.librarysystem.employeeservice.query.queries.GetDetailEmployeeQuery;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/employees")
 @Slf4j
+@Tag(name = "Employee Query")
 public class EmployeeQueryController {
 
     private final QueryGateway queryGateway;
@@ -20,6 +24,20 @@ public class EmployeeQueryController {
         this.queryGateway = queryGateway;
     }
 
+    @Operation(
+            summary = "Get List Employee",
+            description = "Get endpoint for employee with filter",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200"
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized / Invalid Token"
+                    )
+            }
+    )
     @GetMapping
     public EmployeePaginationResponseModel getAllEmployees(
             @RequestParam(defaultValue = "0") int page,
