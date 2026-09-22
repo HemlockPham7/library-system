@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.librarysystem.bookservice.command.command.CreateBookCommand;
 import com.librarysystem.bookservice.command.command.DeleteBookCommand;
 import com.librarysystem.bookservice.command.command.UpdateBookCommand;
-import com.librarysystem.commonservice.model.BookImportModel;
+import com.librarysystem.bookservice.query.model.BookImportModel;
 import com.librarysystem.bookservice.command.model.BookRequestModel;
 import com.librarysystem.bookservice.command.model.MailRequestModel;
 import com.librarysystem.commonservice.services.arrayutils.ChunkService;
