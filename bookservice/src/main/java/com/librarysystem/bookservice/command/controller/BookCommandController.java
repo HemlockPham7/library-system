@@ -4,6 +4,7 @@ import com.librarysystem.bookservice.command.command.CreateBookCommand;
 import com.librarysystem.bookservice.command.command.DeleteBookCommand;
 import com.librarysystem.bookservice.command.command.UpdateBookCommand;
 import com.librarysystem.bookservice.command.model.BookRequestModel;
+import com.librarysystem.commonservice.services.mq.KafkaService;
 import jakarta.validation.Valid;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,13 @@ import java.util.UUID;
 @RequestMapping("/api/v1/books")
 public class BookCommandController {
 
-    @Autowired
-    private CommandGateway commandGateway;
+    private final CommandGateway commandGateway;
+    private final KafkaService kafkaService;
+
+    public BookCommandController(CommandGateway commandGateway, KafkaService kafkaService) {
+        this.commandGateway = commandGateway;
+        this.kafkaService = kafkaService;
+    }
 
     @PostMapping
     public String addBook(@Valid @RequestBody BookRequestModel model) {
@@ -46,5 +52,10 @@ public class BookCommandController {
                 .id(bookId)
                 .build();
         return commandGateway.sendAndWait(command);
+    }
+
+    @PostMapping("/kafka-health")
+    public void sendMessage(@RequestBody String message) {
+        kafkaService.sendMessage("health-check", message);
     }
 }
