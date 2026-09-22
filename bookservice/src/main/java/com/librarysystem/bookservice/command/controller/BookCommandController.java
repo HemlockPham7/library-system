@@ -4,6 +4,7 @@ import com.librarysystem.bookservice.command.command.CreateBookCommand;
 import com.librarysystem.bookservice.command.command.DeleteBookCommand;
 import com.librarysystem.bookservice.command.command.UpdateBookCommand;
 import com.librarysystem.bookservice.command.model.BookRequestModel;
+import com.librarysystem.bookservice.command.model.MailRequestModel;
 import com.librarysystem.commonservice.services.mq.KafkaService;
 import jakarta.validation.Valid;
 import org.axonframework.commandhandling.gateway.CommandGateway;
@@ -55,7 +56,17 @@ public class BookCommandController {
     }
 
     @PostMapping("/kafka-health")
-    public void sendMessage(@RequestBody String message) {
+    public void mqHealthCheck(@RequestBody String message) {
         kafkaService.sendMessage("health-check", message);
+    }
+
+    @PostMapping("/mail-health")
+    public void mailSenderHealthCheck(@RequestBody MailRequestModel model) {
+        kafkaService.sendMessage("emailBasic", model.getEmail());
+    }
+
+    @PostMapping("/mail-send")
+    public void mailSenderWithTemplate(@RequestBody MailRequestModel model) {
+        kafkaService.sendMessage("emailTemplate", model.getEmail());
     }
 }
