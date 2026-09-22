@@ -1,4 +1,4 @@
-package com.librarysystem.bookservice.command.model;
+package com.librarysystem.commonservice.model;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.librarysystem.bookservice.command.command.CreateBookCommand;
 import com.librarysystem.bookservice.command.command.DeleteBookCommand;
 import com.librarysystem.bookservice.command.command.UpdateBookCommand;
-import com.librarysystem.bookservice.command.model.BookImportModel;
+import com.librarysystem.commonservice.model.BookImportModel;
 import com.librarysystem.bookservice.command.model.BookRequestModel;
 import com.librarysystem.bookservice.command.model.MailRequestModel;
 import com.librarysystem.commonservice.services.arrayutils.ChunkService;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,18 +24,21 @@ import java.util.UUID;
 @RequestMapping("/api/v1/books")
 public class BookCommandController {
 
-    private static final int CHUNK_SIZE = 500;
+    private static final int CHUNK_SIZE = 20;
+    private static final String BOOK_IMPORT_TOPIC = "booksImport";
 
     private final CommandGateway commandGateway;
     private final KafkaService kafkaService;
     private final CsvService csvService;
     private final ChunkService chunkService;
+    private final ObjectMapper objectMapper;
 
-    public BookCommandController(CommandGateway commandGateway, KafkaService kafkaService, ObjectMapper objectMapper, CsvService csvService, ChunkService chunkService) {
+    public BookCommandController(CommandGateway commandGateway, KafkaService kafkaService, ObjectMapper objectMapper, CsvService csvService, ChunkService chunkService, ObjectMapper objectMapper1) {
         this.commandGateway = commandGateway;
         this.kafkaService = kafkaService;
         this.csvService = csvService;
         this.chunkService = chunkService;
+        this.objectMapper = objectMapper1;
     }
 
     @PostMapping
@@ -92,10 +94,12 @@ public class BookCommandController {
 
         List<List<BookImportModel>> bookChunks = chunkService.chunk(books, CHUNK_SIZE);
 
-        int totalBooks = 0;
-        int totalChunks = 0;
+        for (List<BookImportModel> bookChunk : bookChunks) {
+            String message = objectMapper.writeValueAsString(bookChunk);
+            kafkaService.sendMessage(BOOK_IMPORT_TOPIC, message);
+        }
 
-        return String.format("Import started. Total books: %d, total chunks: %d", totalBooks, totalChunks);
+        return String.format("Book import started. Total books: %d, total chunks: %d", books.size(), bookChunks.size());
     }
 
     @PostMapping("/kafka-health")
