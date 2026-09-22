@@ -1,28 +1,42 @@
 package com.librarysystem.bookservice.command.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.librarysystem.bookservice.command.command.CreateBookCommand;
 import com.librarysystem.bookservice.command.command.DeleteBookCommand;
 import com.librarysystem.bookservice.command.command.UpdateBookCommand;
+import com.librarysystem.bookservice.command.model.BookImportModel;
 import com.librarysystem.bookservice.command.model.BookRequestModel;
 import com.librarysystem.bookservice.command.model.MailRequestModel;
+import com.librarysystem.commonservice.services.arrayutils.ChunkService;
+import com.librarysystem.commonservice.services.csv.CsvService;
 import com.librarysystem.commonservice.services.mq.KafkaService;
 import jakarta.validation.Valid;
 import org.axonframework.commandhandling.gateway.CommandGateway;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/books")
 public class BookCommandController {
 
+    private static final int CHUNK_SIZE = 500;
+
     private final CommandGateway commandGateway;
     private final KafkaService kafkaService;
+    private final CsvService csvService;
+    private final ChunkService chunkService;
 
-    public BookCommandController(CommandGateway commandGateway, KafkaService kafkaService) {
+    public BookCommandController(CommandGateway commandGateway, KafkaService kafkaService, ObjectMapper objectMapper, CsvService csvService, ChunkService chunkService) {
         this.commandGateway = commandGateway;
         this.kafkaService = kafkaService;
+        this.csvService = csvService;
+        this.chunkService = chunkService;
     }
 
     @PostMapping
@@ -53,6 +67,35 @@ public class BookCommandController {
                 .id(bookId)
                 .build();
         return commandGateway.sendAndWait(command);
+    }
+
+    @PostMapping(
+            value = "/import",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    public String importBooks(
+            @RequestParam("file") MultipartFile file
+    ) throws IOException {
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("CSV file is empty");
+        }
+
+        if (file.getOriginalFilename() == null || !file.getOriginalFilename().toLowerCase().endsWith(".csv")) {
+            throw new IllegalArgumentException("Only CSV files are supported");
+        }
+
+        List<BookImportModel> books = csvService.parse(file, record -> new BookImportModel(
+                        record.get("name"),
+                        record.get("author"),
+                        Boolean.parseBoolean(record.get("isReady"))
+                ));
+
+        List<List<BookImportModel>> bookChunks = chunkService.chunk(books, CHUNK_SIZE);
+
+        int totalBooks = 0;
+        int totalChunks = 0;
+
+        return String.format("Import started. Total books: %d, total chunks: %d", totalBooks, totalChunks);
     }
 
     @PostMapping("/kafka-health")
