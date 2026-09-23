@@ -1,4 +1,4 @@
-package com.librarysystem.bookservice.config;
+package com.librarysystem.borrowingservice.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
@@ -10,8 +10,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @OpenAPIDefinition(
         info = @Info(
-                title = "Book Api Specification",
-                description = "Api documentation for Book Service",
+                title = "Borrowing Api Specification",
+                description = "Api documentation for Borrowing Service",
                 version = "1.0",
                 contact = @Contact(
                         name = "Viet Hoang",
@@ -24,9 +24,9 @@ import org.springframework.context.annotation.Configuration;
         servers = {
                 @Server(
                         description = "Local ENV",
-                        url = "http://localhost:9001"
+                        url = "http://localhost:9201"
                 ),
         }
 )
-public class OpenApiConfig {
+public class BorrowingOpenApiConfig {
 }
