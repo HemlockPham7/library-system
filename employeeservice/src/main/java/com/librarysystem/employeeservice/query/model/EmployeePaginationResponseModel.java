@@ -16,6 +16,6 @@ public class EmployeePaginationResponseModel implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private List<EmployeeResponseCommonModel> data;
+    private List<com.librarysystem.commonservice.model.EmployeeResponseCommonModel> data;
     private PaginationResponseModel pagination;
 }

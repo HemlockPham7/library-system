@@ -2,6 +2,7 @@ package com.librarysystem.bookservice.command.event;
 
 import com.librarysystem.bookservice.command.data.Book;
 import com.librarysystem.bookservice.command.data.BookRepository;
+import com.librarysystem.commonservice.event.BookUpdateStatusEvent;
 import org.axonframework.eventhandling.EventHandler;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeanUtils;
@@ -55,6 +56,15 @@ public class BookEventHandler {
 
             clearBookDetailCache(event.getId());
             clearBooksPageCache();
+        });
+    }
+
+    @EventHandler
+    public void on(BookUpdateStatusEvent event) {
+        Optional<Book> oldBook = bookRepository.findById(event.getBookId());
+        oldBook.ifPresent(book -> {
+            book.setIsReady(event.getIsReady());
+            bookRepository.save(book);
         });
     }
 

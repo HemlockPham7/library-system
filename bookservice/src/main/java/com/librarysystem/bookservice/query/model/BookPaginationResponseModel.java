@@ -16,6 +16,6 @@ public class BookPaginationResponseModel implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private List<BookResponseCommonModel> data;
+    private List<com.librarysystem.commonservice.model.BookResponseCommonModel> data;
     private PaginationResponseModel pagination;
 }

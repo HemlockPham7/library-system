@@ -1,4 +1,4 @@
-package com.librarysystem.borrowingservice.command.command;
+package com.librarysystem.commonservice.command;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +10,12 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeleteBorrowingCommand {
+public class UpdateStatusBookCommand {
+
     @TargetAggregateIdentifier
-    String id;
+    private String bookId;
+    private Boolean isReady;
+    private String employeeId;
+    private String borrowingId;
+
 }

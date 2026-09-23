@@ -4,7 +4,7 @@ import com.librarysystem.bookservice.command.data.Book;
 import com.librarysystem.bookservice.command.data.BookRepository;
 import com.librarysystem.bookservice.query.model.*;
 import com.librarysystem.bookservice.query.queries.GetAllBooksQuery;
-import com.librarysystem.bookservice.query.queries.GetBookDetailQuery;
+import com.librarysystem.commonservice.queries.GetBookDetailQuery;
 import com.librarysystem.commonservice.model.PaginationResponseModel;
 import org.axonframework.queryhandling.QueryHandler;
 import org.redisson.api.RBucket;
@@ -36,18 +36,18 @@ public class BookProjection {
     }
 
     @QueryHandler
-    public BookResponseCommonModel handle(GetBookDetailQuery query) throws Exception {
+    public com.librarysystem.commonservice.model.BookResponseCommonModel handle(GetBookDetailQuery query) throws Exception {
         String cacheKey = CACHE_BOOK_DETAIL_PREFIX + query.getId();
-        RBucket<BookResponseCommonModel> bucket = redissonClient.getBucket(cacheKey);
+        RBucket<com.librarysystem.commonservice.model.BookResponseCommonModel> bucket = redissonClient.getBucket(cacheKey);
 
-        BookResponseCommonModel cachedModel = bucket.get();
+        com.librarysystem.commonservice.model.BookResponseCommonModel cachedModel = bucket.get();
         if (cachedModel != null) {
             return cachedModel;
         }
 
         Book book = bookRepository.findById(query.getId()).orElseThrow(() -> new Exception("Book not found with BookId: " + query.getId()));
 
-        BookResponseCommonModel model = new BookResponseCommonModel();
+        com.librarysystem.commonservice.model.BookResponseCommonModel model = new com.librarysystem.commonservice.model.BookResponseCommonModel();
         BeanUtils.copyProperties(book, model);
 
         bucket.set(model, Duration.ofMinutes(10));
@@ -78,10 +78,10 @@ public class BookProjection {
         );
         Page<Book> books = bookRepository.findAll(pageable);
 
-        List<BookResponseCommonModel> data = books.getContent()
+        List<com.librarysystem.commonservice.model.BookResponseCommonModel> data = books.getContent()
                 .stream()
                 .map(book -> {
-                    BookResponseCommonModel model = new BookResponseCommonModel();
+                    com.librarysystem.commonservice.model.BookResponseCommonModel model = new com.librarysystem.commonservice.model.BookResponseCommonModel();
 
                     BeanUtils.copyProperties(book, model);
                     return model;
