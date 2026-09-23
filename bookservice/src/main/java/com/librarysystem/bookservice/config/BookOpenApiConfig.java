@@ -1,4 +1,4 @@
-package com.librarysystem.employeeservice.config;
+package com.librarysystem.bookservice.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
@@ -10,8 +10,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @OpenAPIDefinition(
         info = @Info(
-                title = "Employee Api Specification",
-                description = "Api documentation for Employee Service",
+                title = "Book Api Specification",
+                description = "Api documentation for Book Service",
                 version = "1.0",
                 contact = @Contact(
                         name = "Viet Hoang",
@@ -24,9 +24,9 @@ import org.springframework.context.annotation.Configuration;
         servers = {
                 @Server(
                         description = "Local ENV",
-                        url = "http://localhost:9301"
+                        url = "http://localhost:9001"
                 ),
         }
 )
-class OpenApiConfig {
+public class BookOpenApiConfig {
 }

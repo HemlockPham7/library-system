@@ -1,9 +1,9 @@
 package com.librarysystem.bookservice.query.controller;
 
 import com.librarysystem.bookservice.query.model.BookPaginationResponseModel;
-import com.librarysystem.bookservice.query.model.BookResponseCommonModel;
+import com.librarysystem.commonservice.model.BookResponseCommonModel;
 import com.librarysystem.bookservice.query.queries.GetAllBooksQuery;
-import com.librarysystem.bookservice.query.queries.GetBookDetailQuery;
+import com.librarysystem.commonservice.queries.GetBookDetailQuery;
 import com.librarysystem.commonservice.services.cache.RedisHealthService;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;

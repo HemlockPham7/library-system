@@ -1,9 +1,9 @@
 package com.librarysystem.employeeservice.query.controller;
 
 import com.librarysystem.employeeservice.query.model.EmployeePaginationResponseModel;
-import com.librarysystem.employeeservice.query.model.EmployeeResponseCommonModel;
+import com.librarysystem.commonservice.model.EmployeeResponseCommonModel;
 import com.librarysystem.employeeservice.query.queries.GetAllEmployeeQuery;
-import com.librarysystem.employeeservice.query.queries.GetDetailEmployeeQuery;
+import com.librarysystem.commonservice.queries.GetDetailEmployeeQuery;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
