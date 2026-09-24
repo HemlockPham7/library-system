@@ -1,10 +1,9 @@
 package com.librarysystem.userservice.service.impl;
 
 import com.librarysystem.userservice.dto.CreateUserRequestDTO;
+import com.librarysystem.userservice.dto.LoginRequestDto;
 import com.librarysystem.userservice.dto.UserResponseDTO;
-import com.librarysystem.userservice.dto.identity.Credential;
-import com.librarysystem.userservice.dto.identity.TokenExchangeParam;
-import com.librarysystem.userservice.dto.identity.UserCreationParam;
+import com.librarysystem.userservice.dto.identity.*;
 import com.librarysystem.userservice.entity.User;
 import com.librarysystem.userservice.repository.IdentityClient;
 import com.librarysystem.userservice.repository.UserRepository;
@@ -108,6 +107,19 @@ public class UserServiceImpl implements IUserService {
     @Override
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public TokenExchangeResponse login(LoginRequestDto dto) {
+        var token = identityClient.exchangeUserToken(UserTokenExchangeParam.builder()
+                .grant_type("password")
+                .client_id(clientId)
+                .client_secret(clientSecret)
+                .scope("openid")
+                .username(dto.getUsername())
+                .password(dto.getPassword())
+                .build());
+        return token;
     }
 
     private UserResponseDTO toDTO(User user) {
